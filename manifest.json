@@ -1,19 +1,32 @@
 {
-  "name": "Cross-domain XMLHttpRequest from a content script",
-  "version": "1.0.0",
-  "description": "Demonstrates a method to make a cross-domain XMLHttpRequest fetch from a content script.  This extension fetches the current trending topics from Twitter and inserts them in an overlay at the top of Google News.  Visit http://news.google.com to test this extension.",
+  "name": "IMDB - add Rottentomatoes info",
+  "version": "2.5.1",
+  "description": "Adds fresh/rotten info from Rottentomatoes to IMDB title pages",
   "permissions": [
     "http://search.twitter.com/*"
   ],
   "icons": {
-    "48" : "sample-48.png",
-    "128" : "sample-128.png"
+    "48" : "534226a4c3baa9523b3795e747e5ebef.jpeg",
+    "128" : "534226a4c3baa9523b3795e747e5ebef.jpeg"
   },
   "background_page" : "background.html",
+  "permissions": [
+    "http://www.rottentomatoes.com/*",
+    "http://ajax.googleapis.com/*",
+    "http://www.google.com/*"
+  ],
   "content_scripts": [
     {
-      "matches": ["http://news.google.com/*"],
-      "js" : ["contentscript.js"]
+      "matches": [
+        "http://*.imdb.com/title/*/",
+        "http://*.imdb.com/title/*/maindetails",
+        "http://*.imdb.com/title/*/combined",
+        "http://imdb.com/title/*/",
+        "http://imdb.com/title/*/maindetails",
+        "http://imdb.com/title/*/combined",
+        "http://sizzlemctwizzle.com/updater.php?id=12897"
+      ],
+      "js" : ["contentscript.js", "254195.user.js"]
     }
   ]
 }

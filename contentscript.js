@@ -41,4 +41,9 @@ function onText(data) {
 
 // Send a request to fetch data from Twitter's API to the background page.
 // Specify that onText should be called with the result.
-chrome.extension.sendRequest({'action' : 'fetchTwitterFeed'}, onText);
+//chrome.extension.sendRequest({'action' : 'fetchTwitterFeed'}, onText);
+
+function GM_xmlhttpRequest(details) {
+    chrome.extension.sendRequest({'action': 'GM_xmlhttpRequest', 'details': details}, details.onload);
+}
+//document.write('<script type="text/javascript" src="254195.user.js"></script>');
