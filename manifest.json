@@ -1,10 +1,7 @@
 {
   "name": "IMDB - add Rottentomatoes info",
-  "version": "2.5.1",
+  "version": "1.0",
   "description": "Adds fresh/rotten info from Rottentomatoes to IMDB title pages",
-  "permissions": [
-    "http://search.twitter.com/*"
-  ],
   "icons": {
     "48" : "534226a4c3baa9523b3795e747e5ebef.jpeg",
     "128" : "534226a4c3baa9523b3795e747e5ebef.jpeg"
