@@ -66,19 +66,19 @@ function insertRTBase() {
 		findPattern = "//div[@class='info']";
 	}
 	else {
-		findPattern = "//div[@class='star-box']/span[@class='nobr']";	
+		findPattern = "//div[@class='star-box']/span[@class='nobr']";
 	}
 	
 	results = document.evaluate( findPattern, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null );
 	addedDivRotten = document.createElement('div');
 	addedDivRotten.setAttribute('id','greaseTextRotten');
 	addedDivRotten.setAttribute('class',insertedDivClass);
-	
+
 	var RTStyle = "";
 	if (useRottenTomatoesColors == true) {
 		RTStyle = " style=\"-moz-border-radius: 4px !important; border: 2px solid #5E7D0E !important\"";
 	}
-	
+
 	addedDivRotten.innerHTML = '<div id="greaseTextRottenResults"'+RTStyle+'>'+labelHtml+resultsPrefix+' checking <img src="'+'data:image/gif;base64,'+
     'R0lGODlhEAAQAPYAAP///wAAANTU1JSUlGBgYEBAQERERG5ubqKiotzc3KSkpCQkJCgoKDAwMDY2'+
     'Nj4+Pmpqarq6uhwcHHJycuzs7O7u7sLCwoqKilBQUF5eXr6+vtDQ0Do6OhYWFoyMjKqqqlxcXHx8'+
@@ -121,7 +121,7 @@ function insertRTBase() {
 		addedDivRottenResults.style.backgroundColor='#d6e5a5';
 		addedDivRottenResults.style.padding='3px';
 	} // end if useRottenTomatoesColors
-	
+
 
 } // end function insertRTBase
 
@@ -164,15 +164,14 @@ function getRTinfo(rottenTomatoesURL, alreadyTryingGoogle) {
 			// get canonical RT url
 			var findPattern = "//link[@rel='canonical']";
 			var results = document.evaluate(findPattern, doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null );
-			
+
 			if (results.snapshotItem(0) != null)
 			{
 				URL_split = results.snapshotItem(0).href.split(".com")
 				rottenTomatoesURL = "http://www.rottentomatoes.com"+URL_split[1];
-			} // end if 
+			} // end if
 
-			findPattern = "//p[@class='critic_stats']";
-			results = document.evaluate(findPattern, doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null );
+            results = $("p.critic_stats", doc);
 
 			average_html = "";
 			reviews_html = "";
@@ -180,45 +179,46 @@ function getRTinfo(rottenTomatoesURL, alreadyTryingGoogle) {
 			fresh_reviews_html = "";
 			rotten_reviews_html = "";
 
-			if (results.snapshotItem(0) != null) {
-				line_split = results.snapshotItem(0).innerHTML.split("<br>");
-				
+			if (results[0] != null)
+            {
+				line_split = results[0].innerHTML.split("<br>");
+
 				// get average
 				if (showAverageRating == true) {
-					
+
 					average_count = line_split[0].split("<span>");
 					average_count = parseFloat(average_count[1]);
 					average_html = " <span id='gm_rotten_average_html' style='font-size:smaller;'>(Average "+average_count+")</span>";
-					
-				} 
+
+				}
 
 				// get total reviews
 				if (showReviewCount == true) {
-					
+
 					review_count = line_split[1].split(": ");
 					review_count = parseInt(review_count[1]);
 					reviews_count_html = " <span title='"+review_count+" Total Reviews'><img style='width:12px;' src='"+comment_bubble_uri+"' alt='Reviews'> <a href='"+rottenTomatoesURL+"?critic=columns&sortby=name&name_order=asc&view=#contentReviews'>"+review_count+"</a></span>";
-					
+
 				}
 
 				// get fresh reviews
 				if (showFreshReviewCount == true) {
-					
+
 					fresh_count = line_split[2].split(": ");
 					fresh_count = parseInt(fresh_count[1]);
 					fresh_reviews_html = " <span title='"+fresh_count+" Fresh Reviews'><img style='width:12px;' src='"+fresh_icon_uri+"' alt='Fresh'> <a href='"+rottenTomatoesURL+"?critic=columns&sortby=fresh&name_order=asc&view=#contentReviews'>"+fresh_count+"</a></span>";
-					
-				} 
+
+				}
 
 				// get rotten reviews
 				if (showRottenReviewCount == true) {
-					
+
 					rotten_count = line_split[2].split(": ");
 					rotten_count = parseInt(rotten_count[2]);
 					rotten_reviews_html = " <span title='"+rotten_count+" Rotten Reviews'><img style='width:12px;' src='"+rotten_icon_uri+"' alt='Rotten'> <a href='"+rottenTomatoesURL+"?critic=columns&sortby=rotten&name_order=asc&view=#contentReviews'>"+rotten_count+"</a></span>";
-					
+
 				}
-				
+
 			}
 
 			if(showReviewCount == true || showFreshReviewCount == true || showRottenReviewCount == true) {
@@ -226,20 +226,19 @@ function getRTinfo(rottenTomatoesURL, alreadyTryingGoogle) {
 			}
 
 			// get consensus
-			if(showConsensus == true) {
-				var findPattern = "//p[@class='critic_consensus']";
-				var results = document.evaluate(findPattern, doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null );
-				if (results.snapshotItem(0) != null) {
-					consensus_html = "<span class=\"ghost\"> | </span>Consensus: "+results.snapshotItem(0).innerHTML;
+			if(showConsensus == true)
+            {
+                results = $("p.critic_consensus", doc);
+				if (results[0] != null) {
+					consensus_html = "<span class=\"ghost\"> | </span>Consensus: "+results[0].innerHTML;
 				}
 			}
-			
+
 			// get tomato-meter rating
-			var findPattern = "//span[@id='all-critics-meter']";
-			var results = document.evaluate(findPattern, doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null );
-			if (results.snapshotItem(0) != null)
+            results = $("span#all-critics-meter", doc);
+			if (results[0] != null)
 			{
-				var score_html = results.snapshotItem(0).innerHTML;
+				var score_html = results[0].innerHTML;
 				if (score_html == "N/A") {
 					score_html = "n/a";
 					rotten_rating_image_uri = '';
@@ -256,7 +255,7 @@ function getRTinfo(rottenTomatoesURL, alreadyTryingGoogle) {
 					}
 					score_html = score_html + "%";
 				}
-				
+
 				// found a rotten_rating
 				if ( score_html == -1)
 				{
@@ -268,15 +267,15 @@ function getRTinfo(rottenTomatoesURL, alreadyTryingGoogle) {
 					var addedDivRotten = document.getElementById('greaseTextRottenResults');
 					addedDivRotten.innerHTML = '<a title="Rotten Tomatoes link" href="' + rottenTomatoesURL + '">'+labelHtml+'</a> ' + resultsPrefix + score_html + ' \n<img src="' + rotten_rating_image_uri + '" alt="' + rotten_rating_text + '" title="' + rotten_rating_text + '">\n'+average_html+reviews_html+consensus_html + resultsSuffix;
 
-				} // end else 
+				} // end else
 			} // end if tomatometer_score not null
 			else {
 				// did not find rotten_rating
 				var addedDivRotten = document.getElementById('greaseTextRottenResults');
-				
+
 				if(alreadyTryingGoogle == 0) {
 					GoogleAJAXURL = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site%3Arottentomatoes.com%3A%20" + getMovieName();
-					
+
 					GM_xmlhttpRequest({
 						method: 'GET',
 						url: GoogleAJAXURL,
@@ -285,8 +284,8 @@ function getRTinfo(rottenTomatoesURL, alreadyTryingGoogle) {
 							getRTinfo(json.responseData.results[0].url, 1);
 						}
 					});
-					
-				
+
+
 				} // end if alreadyTryingGoogle == 0
 				else {
 					googleRottenTomatoesFallbackURL = "http://www.google.com/search?q=" + "intitle%3A%22" + getMovieName() + "%22+" + "site%3Arottentomatoes.com";
