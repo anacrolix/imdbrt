@@ -10,7 +10,8 @@
   "permissions": [
     "http://www.rottentomatoes.com/*",
     "http://ajax.googleapis.com/*",
-    "http://www.google.com/*"
+    "http://www.google.com/*",
+    "http://api.rottentomatoes.com/*"
   ],
   "content_scripts": [
     {
