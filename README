@@ -1,0 +1,8 @@
+The root directory contains various images that probably aren't required anymore. The item directory contains the actual extension code.
+
+To create the release ZIP:
+
+  zip item item/*
+
+Magic ensues.
+
