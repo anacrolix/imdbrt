@@ -1,16 +1,13 @@
 {
-  "name": "IMDB - add Rottentomatoes info",
-  "version": "2.0",
-  "description": "Adds fresh/rotten info from Rottentomatoes to IMDB title pages",
+  "name": "IMDBRT",
+  "version": "2.0.1",
+  "description": "Show Rotten Tomatoes/Flixster movie ratings on IMDB.",
   "icons": {
-    "48" : "534226a4c3baa9523b3795e747e5ebef.jpeg",
-    "128" : "534226a4c3baa9523b3795e747e5ebef.jpeg"
+    "128" : "128_rotten_tomatoes.jpg"
   },
   "background_page" : "background.html",
   "permissions": [
     "http://www.rottentomatoes.com/*",
-    "http://ajax.googleapis.com/*",
-    "http://www.google.com/*",
     "http://api.rottentomatoes.com/*"
   ],
   "content_scripts": [
@@ -21,8 +18,7 @@
         "http://*.imdb.com/title/*/combined",
         "http://imdb.com/title/*/",
         "http://imdb.com/title/*/maindetails",
-        "http://imdb.com/title/*/combined",
-        "http://sizzlemctwizzle.com/updater.php?id=12897"
+        "http://imdb.com/title/*/combined"
       ],
       "js" : ["jquery-1.4.3.js", "contentscript.js", "12897.js"]
     }
