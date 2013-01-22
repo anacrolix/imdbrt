@@ -2,14 +2,15 @@
 // @name			IMDB - add Rottentomatoes info
 // @namespace		http://userscripts.org/scripts/show/12897
 // @description		Adds info from Rottentomatoes to IMDB title pages
-// @version			3.1.1
+// @grant			GM_xmlhttpRequest
+// @version			3.4.1
 // @include			http://*.imdb.com/title/*/
+// @include			http://*.imdb.com/title/*/?*
 // @include			http://*.imdb.com/title/*/maindetails
 // @include			http://*.imdb.com/title/*/combined
 // @include			http://imdb.com/title/*/
 // @include			http://imdb.com/title/*/maindetails
 // @include			http://imdb.com/title/*/combined
-// @require			http://sizzlemctwizzle.com/updater.php?id=12897
 // @require			http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js
 // @require			http://courses.ischool.berkeley.edu/i290-4/f09/resources/gm_jq_xhr.js
 // ==/UserScript==
@@ -23,6 +24,13 @@
 // http://www.imdb.com/title/tt0386676/ -- The Office (TV Series 2005– ) -- TV show (shouldn't add any RT information)
 // http://www.imdb.com/title/tt1848620/ -- "The Office" Search Committee -- TV show episode (shouldn't add any RT information)
 // http://www.imdb.com/title/tt1848620/combined -- "The Office" Search Committee -- Old IMDb layout -- TV show episode (shouldn't add any RT information)
+
+// http://www.imdb.com/title/tt1375666/ -- Inception (2010) -- certified fresh
+// http://www.imdb.com/title/tt1375666/ -- Inception (2010) -- upright bucket
+// http://www.imdb.com/title/tt0121765/ -- Star Wars: Episode II - Attack of the Clones (2002) -- fresh
+// http://www.imdb.com/title/tt0105643/ -- Troll 2 (1990) -- rotten
+// http://www.imdb.com/title/tt0105643/ -- Troll 2 (1990) -- spilled bucket
+
 
 // ==User-Defined Variables==
 
@@ -105,10 +113,10 @@ if (useRottenTomatoesColors == true) {
 		background-position: 120px 128px;			\
 	}												\
 	#rottenTomatoesResults div.rtIcon.certified_fresh {		\
-		background-position: 120px 80px;			\
+		background-position: 120px 84px;			\
 	}												\
 	#rottenTomatoesResults div.rtIcon.rotten {		\
-		background-position: 72px 80px;				\
+		background-position: 72px 84px;				\
 	}												\
 	#rottenTomatoesResults div.rtIcon.upright {		\
 		background-position: 280px 48px;			\
@@ -268,6 +276,7 @@ var spinnerGif = $('<img></img>').
 	
 // try to avoid running on TV series pages
 if (document.title.indexOf('TV Series') < 0
+	&& document.title.indexOf('TV mini-series') < 0
 	&& $("#pagecontent").html().indexOf('<h2 class="tv_header">') < 0
 	&& $("#pagecontent").html().indexOf("<h5>TV Series:</h5>") < 0
 ) {
@@ -283,6 +292,7 @@ function getRTFromImdbId() {
 	$(insertSelector).append(rottenTomatoesResults);
 
 	$.getJSON('http://api.rottentomatoes.com/api/public/v1.0/movie_alias.json?type=imdb&id='+getIMDBid()+'&apikey='+rottenTomatoesApiKey, function(response){
+		
 		if (response.hasOwnProperty("error")) {
 			rottenTomatoesResults.html("Got error from Rotten Tomatoes' IMDb Alias API: \"").
 				append(response.error).

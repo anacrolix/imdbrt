@@ -1,11 +1,13 @@
 {
   "name": "IMDBRT",
-  "version": "2.0.1",
+  "version": "3.4.1",
   "description": "Show Rotten Tomatoes/Flixster movie ratings on IMDB.",
   "icons": {
     "128" : "128_rotten_tomatoes.jpg"
   },
-  "background_page" : "background.html",
+  "background" : {
+    "scripts": ["background.js"]
+  },
   "permissions": [
     "http://www.rottentomatoes.com/*",
     "http://api.rottentomatoes.com/*"
@@ -14,6 +16,7 @@
     {
       "matches": [
         "http://*.imdb.com/title/*/",
+        "http://*.imdb.com/title/*/?*",
         "http://*.imdb.com/title/*/maindetails",
         "http://*.imdb.com/title/*/combined",
         "http://imdb.com/title/*/",
@@ -22,5 +25,6 @@
       ],
       "js" : ["jquery-1.4.3.js", "contentscript.js", "12897.js"]
     }
-  ]
+  ],
+  "manifest_version": 2
 }
