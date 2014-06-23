@@ -34,7 +34,7 @@
 
 // ==User-Defined Variables==
 
-rottenTomatoesApiKey = 'rya8rbpjf93kx9xcu2876ght'; // customize for your own Rotten Tomatoes API login details
+rottenTomatoesApiKey = '84zae6yxzm4fzg6q4gydyy5d'; // customize for your own Rotten Tomatoes API login details
 
 //showConsensus = false;
 showConsensus = true;
@@ -273,7 +273,7 @@ var spinnerGif = $('<img></img>').
 		'ggwtvo86H7YAZ1korkRaEYJlC3WuESxBggJLWHGGFhcIxgBvUHQyUT1GQWwhFxuFKyBPakxNXgce'+
 		'YY9HCDEZTlxA8cOVwUGBAAA7AAAAAAAAAAAA'
 	);
-	
+
 // try to avoid running on TV series pages
 if (document.title.indexOf('TV Series') < 0
 	&& document.title.indexOf('TV mini-series') < 0
@@ -305,7 +305,7 @@ function getRTFromImdbId() {
 		else {
 			parseValidResponse(response);
 		}
-		
+
 	});
 
 } // end function getRTFromImdbId
@@ -331,7 +331,7 @@ function getRTFromTitle() {
 }
 function parseValidResponse(response) {
 	var rottenResults = $('#rottenTomatoesResults');
-	
+
 	// add tomato-meter score and icon
 	var tomatoMeterScoreImage = '';
 	if (response.ratings.critics_score == -1) {
@@ -341,9 +341,9 @@ function parseValidResponse(response) {
 	else {
 		tomatoMeterScoreText = response.ratings.critics_score;
 		tomatoMeterScoreClass = "";
-		
+
 		critics_rating_text = response.ratings.critics_rating;
-		
+
 		if (critics_rating_text == "Certified Fresh") { // it's certified fresh
 			critics_rating_image_class = 'certified_fresh';
 		}
@@ -386,7 +386,7 @@ function parseValidResponse(response) {
 		addClass("floater"+tomatoMeterScoreClass).
 		html(tomatoMeterScoreImage).
 		append(tomatoMeterScoreText);
-		
+
 	rottenResults.html(tomatoMeter);
 
 	if (showConsensus) {
@@ -404,7 +404,7 @@ function parseValidResponse(response) {
 				append(consensusText)
 		);
 	}
-	
+
 	if (showAudience) {
 		if (response.ratings.hasOwnProperty("audience_rating")) {
 			audience_rating_text = response.ratings.audience_rating;
@@ -412,7 +412,7 @@ function parseValidResponse(response) {
 		else {
 			audience_rating_text = "No Audience Rating Yet";
 		}
-		
+
 		audience_rating_label = "Liked It";
 		if (audience_rating_text == "Upright") {
 			audience_rating_image_class = 'upright';
@@ -426,9 +426,9 @@ function parseValidResponse(response) {
 				audience_rating_image_class = 'wts';
 			}
 		}
-		
+
 		AudienceScoreText = response.ratings.audience_score + "%";
-		
+
 
 		AudienceScoreImage = $('<div></div>').
 			attr('class', 'rtIcon ' + audience_rating_image_class).
@@ -444,21 +444,21 @@ function parseValidResponse(response) {
 				append(AudienceScoreText)
 		);
 	}
-	
+
 	rottenResults.append(
 		$('<div></div>').
 			addClass("rottenClear").
 			html("&nbsp;")
 	);
-	
+
 	// TODO add average rating -- currently not implemented in RT API
-	
+
 	// TODO add review count -- currently not implemented in RT API
-	
+
 	// TODO add fresh review count -- currently not implemented in RT API
 
 	// TODO add rotten review count -- currently not implemented in RT API
-	
+
 }
 
 function getIMDBid () {

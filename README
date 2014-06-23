@@ -4,5 +4,4 @@ To create the release ZIP:
 
   zip item item/*
 
-Magic ensues.
-
+To update the source script, download one of the install links from http://userscripts.org:8080/scripts/versions/12897 to item/12897.js. Patch the API key if necessary.
