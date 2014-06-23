@@ -3,7 +3,7 @@
 // @namespace		http://userscripts.org/scripts/show/12897
 // @description		Adds info from Rottentomatoes to IMDB title pages
 // @grant			GM_xmlhttpRequest
-// @version			3.4.1
+// @version			3.4.3
 // @include			http://*.imdb.com/title/*/
 // @include			http://*.imdb.com/title/*/?*
 // @include			http://*.imdb.com/title/*/maindetails
@@ -288,11 +288,13 @@ function getRTFromImdbId() {
 	var rottenTomatoesResults = $('<div></div>').
 		attr('id', "rottenTomatoesResults").
 		html("Checking Rotten Tomatoes... ").
-		append(spinnerGif); 
+		append(spinnerGif);
 	$(insertSelector).append(rottenTomatoesResults);
 
-	$.getJSON('http://api.rottentomatoes.com/api/public/v1.0/movie_alias.json?type=imdb&id='+getIMDBid()+'&apikey='+rottenTomatoesApiKey, function(response){
-		
+	var rtUrl = 'http://api.rottentomatoes.com/api/public/v1.0/movie_alias.json?type=imdb&id='+getIMDBid()+'&apikey='+rottenTomatoesApiKey;
+
+	$.getJSON(rtUrl, function(response){
+
 		if (response.hasOwnProperty("error")) {
 			rottenTomatoesResults.html("Got error from Rotten Tomatoes' IMDb Alias API: \"").
 				append(response.error).
@@ -309,7 +311,6 @@ function getRTFromImdbId() {
 } // end function getRTFromImdbId
 
 function getRTFromTitle() {
-
 	var rtUrl = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey='+rottenTomatoesApiKey+'&q='+getMovieName()+'%20'+getMovieYear();
 
 	$.getJSON(rtUrl, function(response){
@@ -376,7 +377,7 @@ function parseValidResponse(response) {
 
 	var tomatoMeterScore = $('<span></span>').
 		attr("id", "rottenTomatoesTomatoMeterScore").
-		text(tomatoMeterScoreText); 
+		text(tomatoMeterScoreText);
 
 	var tomatoMeter = $('<a></a>').
 		attr('href', response.links.alternate).
@@ -413,11 +414,11 @@ function parseValidResponse(response) {
 		}
 		
 		audience_rating_label = "Liked It";
-		if (audience_rating_text == "Upright") { 
+		if (audience_rating_text == "Upright") {
 			audience_rating_image_class = 'upright';
 		}
 		else {
-			if (audience_rating_text == "Spilled") { 
+			if (audience_rating_text == "Spilled") {
 				audience_rating_image_class = 'spilled';
 			}
 			else {
@@ -467,21 +468,18 @@ function getIMDBid () {
 }
 
 function getMovieYear() {
-	var links = document.evaluate(
-			"//a[contains(@href,'year')]/text()",
+	var dateMeta = document.evaluate(
+			"//meta[@itemprop='datePublished']",
 			document,
 			null,
 			XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
 			null);
 
-	year = new Date();
-	year.setFullYear(links.snapshotItem(0).data);
-	year = year.getFullYear();
-	return year;
+	return new Date(dateMeta.snapshotItem(0).content).getFullYear();
 }
 
 function getMovieName () {
-	const $xpath = '//h1/text()';
+	const $xpath = '//h1/span[@itemprop="name"]/text()';
 	var $nodes = document.evaluate($xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
 	return escape($nodes.singleNodeValue.data.replace(/[^\w \xC0-\xFF]/g, ''));
 }
