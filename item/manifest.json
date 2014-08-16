@@ -10,7 +10,7 @@
   },
   "permissions": [
     "http://www.rottentomatoes.com/*",
-    "http://api.rottentomatoes.com/*"
+    "http://rtapi.anacrolix.link/*"
   ],
   "content_scripts": [
     {

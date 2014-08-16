@@ -34,6 +34,8 @@
 
 // ==User-Defined Variables==
 
+rtAPIDomain = 'rtapi.anacrolix.link';
+
 rottenTomatoesApiKey = '84zae6yxzm4fzg6q4gydyy5d'; // customize for your own Rotten Tomatoes API login details
 
 //showConsensus = false;
@@ -291,7 +293,7 @@ function getRTFromImdbId() {
 		append(spinnerGif);
 	$(insertSelector).append(rottenTomatoesResults);
 
-	var rtUrl = 'http://api.rottentomatoes.com/api/public/v1.0/movie_alias.json?type=imdb&id='+getIMDBid()+'&apikey='+rottenTomatoesApiKey;
+	var rtUrl = 'http://'+rtAPIDomain+'/api/public/v1.0/movie_alias.json?type=imdb&id='+getIMDBid()+'&apikey='+rottenTomatoesApiKey;
 
 	$.getJSON(rtUrl, function(response){
 
@@ -311,7 +313,7 @@ function getRTFromImdbId() {
 } // end function getRTFromImdbId
 
 function getRTFromTitle() {
-	var rtUrl = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey='+rottenTomatoesApiKey+'&q='+getMovieName()+'%20'+getMovieYear();
+	var rtUrl = 'http://'+rtAPIDomain+'/api/public/v1.0/movies.json?apikey='+rottenTomatoesApiKey+'&q='+getMovieName()+'%20'+getMovieYear();
 
 	$.getJSON(rtUrl, function(response){
 		if (response.hasOwnProperty("error")) {
