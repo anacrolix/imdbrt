@@ -3,7 +3,7 @@
 // @namespace		http://userscripts.org/scripts/show/12897
 // @description		Adds info from Rottentomatoes to IMDB title pages
 // @grant			GM_xmlhttpRequest
-// @version			3.4.3
+// @version			3.5
 // @include			http://*.imdb.com/title/*/
 // @include			http://*.imdb.com/title/*/?*
 // @include			http://*.imdb.com/title/*/maindetails
@@ -11,7 +11,7 @@
 // @include			http://imdb.com/title/*/
 // @include			http://imdb.com/title/*/maindetails
 // @include			http://imdb.com/title/*/combined
-// @require			http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js
+// @require			http://code.jquery.com/jquery-1.11.0.min.js
 // @require			http://courses.ischool.berkeley.edu/i290-4/f09/resources/gm_jq_xhr.js
 // ==/UserScript==
 
@@ -138,6 +138,9 @@ if (useRottenTomatoesColors == true) {
 	#rottenTomatoesResults .floater {				\
 		float:left;									\
 		padding: 0 3px;								\
+	}												\
+	#rottenTomatoesResults .rt-credits {			\
+		font-size: 11px;							\
 	}												\
 	#rottenTomatoesTomatoMeterScore, #rottenTomatoesAudience {				\
 		font-family: Arial, Helvetica, sans-serif;	\
@@ -295,38 +298,52 @@ function getRTFromImdbId() {
 
 	var rtUrl = 'http://'+rtAPIDomain+'/api/public/v1.0/movie_alias.json?type=imdb&id='+getIMDBid()+'&apikey='+rottenTomatoesApiKey;
 
-	$.getJSON(rtUrl, function(response){
+	GM_xmlhttpRequest({
+		method: "GET",
+		url: rtUrl,
+		onload: function(response) {
+			response = JSON.parse(response.responseText);
 
-		if (response.hasOwnProperty("error")) {
-			rottenTomatoesResults.html("Got error from Rotten Tomatoes' IMDb Alias API: \"").
-				append(response.error).
-				append("\" Trying Rotten Tomatoes Movie API...").
-				append(spinnerGif);
-			getRTFromTitle();
-		}
-		else {
-			parseValidResponse(response);
-		}
+			if (response.hasOwnProperty("error")) {
+				rottenTomatoesResults.html("Got error from Rotten Tomatoes' IMDb Alias API: \"")
+					.append(response.error + '"');
 
+				if (response.error != "Account Inactive") {
+					rottenTomatoesResults
+						.append("\" Trying Rotten Tomatoes Movie API...")
+						.append(spinnerGif);
+
+					getRTFromTitle();
+				}
+			}
+			else {
+				parseValidResponse(response);
+			}
+		}
 	});
-
 } // end function getRTFromImdbId
 
 function getRTFromTitle() {
 	var rtUrl = 'http://'+rtAPIDomain+'/api/public/v1.0/movies.json?apikey='+rottenTomatoesApiKey+'&q='+getMovieName()+'%20'+getMovieYear();
 
-	$.getJSON(rtUrl, function(response){
-		if (response.hasOwnProperty("error")) {
-			rottenTomatoesResults.html("Got error from Rotten Tomatoes' Movie API: \"").
-				append(response.error).
-				append("\" Giving up.");
-		}
-		else {
-			if (response.hasOwnProperty("movies")) {
-				parseValidResponse(response.movies[0])
+	GM_xmlhttpRequest({
+		method: "GET",
+		url: rtUrl,
+		onload: function(response) {
+			response = JSON.parse(response.responseText);
+
+			if (response.hasOwnProperty("error")) {
+				rottenTomatoesResults.html("Got error from Rotten Tomatoes' Movie API: \"").
+					append(response.error).
+					append("\" Giving up.");
 			}
 			else {
-				rottenTomatoesResults.html("Unable to find film in Rotten Tomatoes' Movie API. Giving up.");
+				if (response.hasOwnProperty("movies")) {
+					parseValidResponse(response.movies[0])
+				}
+				else {
+					rottenTomatoesResults.html("Unable to find film in Rotten Tomatoes' Movie API. Giving up.");
+				}
 			}
 		}
 	});
@@ -386,7 +403,8 @@ function parseValidResponse(response) {
 		attr("id", "rottenTomatoesTomatoMeterScore").
 		attr("title", "\""+response.title+"\" on Rotten Tomatoes").
 		addClass("floater"+tomatoMeterScoreClass).
-		html(tomatoMeterScoreImage).
+		html('<p class="rt-credits">Rotten Tomatoes® Score</p>').
+		append(tomatoMeterScoreImage).
 		append(tomatoMeterScoreText);
 
 	rottenResults.html(tomatoMeter);
