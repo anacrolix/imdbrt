@@ -1,3 +1,5 @@
+Project inspired by Curtis Gibby's Greasemonkey script. http://userscripts.org/scripts/show/12897.
+
 The root directory contains various images that probably aren't required anymore. The item directory contains the actual extension code.
 
 To create the release ZIP:
@@ -5,4 +7,3 @@ To create the release ZIP:
   zip item item/*
 
 To update the source script, download one of the install links from http://userscripts-mirror.org/scripts/show/12897 to item/12897.js. The current site may not have the older versions so save link as on the 'Install' button. Diff the saved file with the base and restore any relevant changes.
-
