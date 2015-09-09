@@ -3,7 +3,10 @@ function GM_xmlhttpRequest(details, callback) {
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
-        callback(xhr);
+        callback({
+          responseText: xhr.responseText,
+          error: xhr.error,
+        });
       }
       else {
         callback(null);
