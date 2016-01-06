@@ -1,6 +1,7 @@
 {
-  "name": "IMDBRT",
-  "version": "4.0.1",
+  "name": "IMDB - add Rottentomatoes info",
+  "short_name": "IMDBRT",
+  "version": "4.0.1.1",
   "description": "Show Rotten Tomatoes/Flixster movie ratings on IMDB.",
   "icons": {
     "128" : "128_rotten_tomatoes.jpg"
