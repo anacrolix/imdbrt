@@ -1,6 +1,6 @@
 {
   "name": "IMDBRT",
-  "version": "3.5.1",
+  "version": "4.0.1",
   "description": "Show Rotten Tomatoes/Flixster movie ratings on IMDB.",
   "icons": {
     "128" : "128_rotten_tomatoes.jpg"
@@ -23,7 +23,7 @@
         "http://imdb.com/title/*/maindetails",
         "http://imdb.com/title/*/combined"
       ],
-      "js" : ["jquery-1.4.3.js", "contentscript.js", "12897.js"]
+      "js" : ["jquery-1.4.3.js", "contentscript.js", "grease-script.js"]
     }
   ],
   "manifest_version": 2
