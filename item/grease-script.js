@@ -301,12 +301,12 @@ function parseValidResponse(response) {
 	
 	// add tomato-meter score and icon
 	var tomatoMeterScoreImage = '';
-	if (response.tomatoMeter == 'N/A') {
+	if (response.Ratings[1].Value == 'N/A') {
 		tomatoMeterScoreText = 'No Score Yet...';
 		tomatoMeterScoreClass = ' noScore';
 	} else {
 		tomatoMeterScoreClass = '';
-		tomatoMeterScoreText = response.tomatoMeter + '%';
+		tomatoMeterScoreText = response.Ratings[1].Value;
 
 		tomatoMeterScoreImage = $('<div/>').
 			attr('class', 'rtIcon ' + response.tomatoImage).
