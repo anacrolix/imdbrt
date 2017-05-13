@@ -3,7 +3,7 @@
 // @namespace		https://greasyfork.org/en/users/7864-curtis-gibby
 // @description		Adds info from Rottentomatoes to IMDB title pages
 // @grant			GM_xmlhttpRequest
-// @version			4.0.1
+// @version			4.0.2
 // @include			http://*.imdb.com/title/*/
 // @include			http://*.imdb.com/title/*/?*
 // @include			http://*.imdb.com/title/*/maindetails
@@ -112,34 +112,28 @@ if (useRottenTomatoesColors == true) {
 		margin-right: 10px;							\
 	}												\
 	#rottenTomatoesResults div.rtIcon {				\
-		background:url("http://images.rottentomatoescdn.com/images/redesign/icons-v2.png") 0 0;						\
+		background: transparent url("https://www.rottentomatoes.com/static/images/redesign/icons-v2.png") no-repeat scroll -312px -160px;						\
 		float: left;								\
 		width: 48px;								\
 		height: 48px;								\
 	}												\
 	#rottenTomatoesResults div.rtIcon.fresh {		\
-		background-position: 120px 132px;			\
+		background-position: -192px -48px;			\
 	}												\
 	#rottenTomatoesResults div.rtIcon.certified {		\
-		background-position: 120px 84px;			\
+		background-position: -192px -96px;			\
 	}												\
 	#rottenTomatoesResults div.rtIcon.rotten {		\
-		background-position: 72px 84px;				\
+		background-position: -240px -96px;				\
 	}												\
 	#rottenTomatoesResults div.rtIcon.upright {		\
-		background-position: 280px 52px;			\
-		width: 32px;								\
-		height: 32px;								\
+		background-position: -240px -48px;			\
 	}												\
 	#rottenTomatoesResults div.rtIcon.spilled {		\
-		background-position: 184px 52px;			\
-		width: 32px;								\
-		height: 32px;								\
+		background-position: -192px 0;			\
 	}												\
 	#rottenTomatoesResults div.rtIcon.wts {			\
-		background-position: 312px 52px;			\
-		width: 32px;								\
-		height: 32px;								\
+		background-position: -240px 0px;			\
 	}												\
 	#rottenTomatoesResults .floater {				\
 		float:left;									\
