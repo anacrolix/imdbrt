@@ -182,7 +182,6 @@ else {
 		padding: 0 3px;								\
 	}												\
 	#rottenTomatoesResults div.rtIcon {				\
-	}												\
 		background:url("https://www.rottentomatoes.com/static/images/redesign/icons-v2.png") 0 0;						\
 		float: left;								\
 		width: 32px;								\
