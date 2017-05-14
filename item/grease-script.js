@@ -182,7 +182,8 @@ else {
 		padding: 0 3px;								\
 	}												\
 	#rottenTomatoesResults div.rtIcon {				\
-		background:url("http://images.rottentomatoescdn.com/images/redesign/icons-v2.png") 0 0;						\
+	}												\
+		background:url("https://www.rottentomatoes.com/static/images/redesign/icons-v2.png") 0 0;						\
 		float: left;								\
 		width: 32px;								\
 		height: 32px;								\
@@ -295,18 +296,28 @@ function parseValidResponse(response) {
 	
 	// add tomato-meter score and icon
 	var tomatoMeterScoreImage = '';
-	if (response.Ratings[1].Value == 'N/A') {
-		tomatoMeterScoreText = 'No Score Yet...';
-		tomatoMeterScoreClass = ' noScore';
-	} else {
-		tomatoMeterScoreClass = '';
-		tomatoMeterScoreText = response.Ratings[1].Value;
+	
+	// set our defaults
+	tomatoMeterScoreText = 'No Score Yet...';
+	tomatoMeterScoreClass = ' noScore'
+	
+	// loop through available ratings sources to find RT
+	for (i = 0; i < response.Ratings.length; i++) {
+		if (response.Ratings[i].Source == 'Rotten Tomatoes') {
+			if (response.Ratings[i].Value != 'N/A') {
+				tomatoMeterScoreClass = '';
+				tomatoMeterScoreText = response.Ratings[i].Value;
 
-		tomatoMeterScoreImage = $('<div/>').
-			attr('class', 'rtIcon ' + response.tomatoImage).
-			attr('title', response.tomatoImage + ' - ' + tomatoMeterScoreText);
+				tomatoMeterScoreImage = $('<div/>').
+					attr('class', 'rtIcon ' + determineRatingIcon(tomatoMeterScoreText.slice(0, -1))).
+					//attr('class', 'rtIcon ' + response.tomatoImage).
+					attr('title', response.tomatoImage + ' - ' + tomatoMeterScoreText);
+			}
+			
+			break;
+		}
 	}
-
+	
 	var tomatoMeterScore = $('<span/>').
 		attr('id', 'rottenTomatoesTomatoMeterScore').
 		text(tomatoMeterScoreText);
@@ -425,4 +436,17 @@ function getIMDBid () {
 	var regexImdbNum = /\/title\/tt(\d{7})\//;
 	id = regexImdbNum.exec(document.location);
 	return id[1];
+}
+
+function determineRatingIcon(rating) {
+	// we can only go by rating not other qualifiers; not accurate for "certified"
+	if (rating < 60) {
+		return "rotten";
+	}
+	else if (rating < 70) {
+		return "fresh";
+	}
+	else {
+		return "certified";
+	}
 }
