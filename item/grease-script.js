@@ -274,17 +274,19 @@ function getRTFromImdbId() {
 		append(spinnerGif);
 	$(insertSelector).append(rottenTomatoesResults);
 
-	var apiUrl = 'http://www.omdbapi.com/?tomatoes=true&i=tt'+getIMDBid();
+	var apiUrl = 'http://www.omdbapi.com/?tomatoes=true&i=tt'+getIMDBid()+'&apikey=aa5ed605';
 
 	GM_xmlhttpRequest({
 		method: "GET",
 		url: apiUrl,
 		onload: function(response) {
-			response = JSON.parse(response.responseText);
-			if (response.hasOwnProperty('Error')) {
-				rottenTomatoesResults.html('Got error from OMDB: "' + response.Error + '"');
-			} else {
-				parseValidResponse(response);
+			if (response) {
+				response = JSON.parse(response.responseText);
+				if (response.hasOwnProperty('Error')) {
+					rottenTomatoesResults.html('Got error from OMDB: "' + response.Error + '"');
+				} else {
+					parseValidResponse(response);
+				}
 			}
 		}
 	});
