@@ -24,7 +24,7 @@
         "*://imdb.com/title/*/maindetails",
         "*://imdb.com/title/*/combined"
       ],
-      "js" : ["jquery-1.4.3.js", "contentscript.js", "grease-script.js"]
+      "js" : ["jquery-1.11.0.min.js", "contentscript.js", "grease-script.js"]
     }
   ],
   "manifest_version": 2
