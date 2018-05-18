@@ -10,8 +10,10 @@
     "scripts": ["background.js"]
   },
   "permissions": [
-    "http://www.rottentomatoes.com/*",
-    "http://rtapi.anacrolix.link/*"
+    "*://www.rottentomatoes.com/*",
+    "*://rtapi.anacrolix.link/*",
+    "https://duckduckgo.com/*",
+    "https://cinesift.com/api/*"
   ],
   "content_scripts": [
     {
