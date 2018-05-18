@@ -1,9 +1,17 @@
-Project inspired by Curtis Gibby's Greasemonkey script that was at http://userscripts.org/scripts/show/12897. It now appears to be maintained at https://greasyfork.org/en/scripts/7158-imdb-add-rottentomatoes-info.
+Project inspired by Curtis Gibby's Greasemonkey script that was at
+http://userscripts.org/scripts/show/12897. It now appears to be maintained at
+https://greasyfork.org/en/scripts/7158-imdb-add-rottentomatoes-info.
 
 The root directory contains various images that probably aren't required anymore. The item directory contains the actual extension code.
 
 To create the release ZIP:
 
+  rm item.zip
   zip item item/*
 
-To update the source script, download the script from https://greasyfork.org/en/scripts/7158-imdb-add-rottentomatoes-info to item/grease-script.js. Diff the saved file with the base and restore any relevant changes.
+To update the source script, download the script from
+https://greasyfork.org/en/scripts/7158-imdb-add-rottentomatoes-info to item
+/grease-script.js. Diff the saved file with the base and restore any relevant
+changes.
+
+Upload the new item to https://chrome.google.com/webstore/developer/dashboard .
