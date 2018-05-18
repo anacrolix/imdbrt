@@ -2,8 +2,7 @@
 // @name			IMDB - add Rottentomatoes info
 // @namespace		https://greasyfork.org/en/users/7864-curtis-gibby
 // @description		Adds info from Rottentomatoes to IMDB title pages
-// @grant			GM_xmlhttpRequest
-// @version			4.0.2
+// @version			4.1.4
 // @include			http://*.imdb.com/title/*/
 // @include			http://*.imdb.com/title/*/?*
 // @include			http://*.imdb.com/title/*/maindetails
@@ -29,6 +28,7 @@
 // http://www.imdb.com/title/tt0121765/ -- Star Wars: Episode II - Attack of the Clones (2002) -- fresh
 // http://www.imdb.com/title/tt0105643/ -- Troll 2 (1990) -- rotten
 // http://www.imdb.com/title/tt0105643/ -- Troll 2 (1990) -- spilled bucket
+// http://www.imdb.com/title/tt2543472/ -- Wonder (2017) -- *not* Wonder Woman (2017)
 
 
 // ==User-Defined Variables==
@@ -101,12 +101,9 @@ if (useRottenTomatoesColors == true) {
 			rgb(255,254,215) 30%					\
 		);											\
 	}												\
-	#rottenTomatoesResults a, #rottenTomatoesResults a:link, #rottenTomatoesResults a:hover {	\
+	#rottenTomatoesResults {                        \
 		color: #506A16 !important;					\
 		text-decoration: none !important;			\
-	}												\
-	#rottenTomatoesResults a:hover {				\
-		text-decoration: underline !important;		\
 	}												\
 	#rottenTomatoesResults img {					\
 		margin-right: 10px;							\
@@ -150,6 +147,9 @@ if (useRottenTomatoesColors == true) {
 		font-style: normal; 						\
 		width: 48%;			 						\
 	}												\
+	#rottenTomatoesTomatoMeterScore .rtIcon {		\
+		margin-right: 5px;							\
+	}												\
 	#rottenTomatoesTomatoMeterScore.noScore {		\
 		font-size: 26px; 							\
 	}												\
@@ -182,7 +182,7 @@ else {
 		padding: 0 3px;								\
 	}												\
 	#rottenTomatoesResults div.rtIcon {				\
-		background:url("https://www.rottentomatoes.com/static/images/redesign/icons-v2.png") 0 0;						\
+		background:url("http://images.rottentomatoescdn.com/images/redesign/icons-v2.png") 0 0;						\
 		float: left;								\
 		width: 32px;								\
 		height: 32px;								\
@@ -263,68 +263,69 @@ if (document.title.indexOf('TV Series') < 0
 	&& $("#pagecontent").html().indexOf('<h2 class="tv_header">') < 0
 	&& $("#pagecontent").html().indexOf("<h5>TV Series:</h5>") < 0
 ) {
-	getRTFromImdbId();
+	getRTInfo();
 }
 
-function getRTFromImdbId() {
-
+function getRTInfo() {
 	var rottenTomatoesResults = $('<div/>').
 		attr('id', "rottenTomatoesResults").
 		html("Checking Rotten Tomatoes... ").
 		append(spinnerGif);
 	$(insertSelector).append(rottenTomatoesResults);
 
-	var apiUrl = 'http://www.omdbapi.com/?tomatoes=true&i=tt'+getIMDBid()+'&apikey=aa5ed605';
-
-	GM_xmlhttpRequest({
-		method: "GET",
-		url: apiUrl,
-		onload: function(response) {
-			if (response) {
-				response = JSON.parse(response.responseText);
-				if (response.hasOwnProperty('Error')) {
-					rottenTomatoesResults.html('Got error from OMDB: "' + response.Error + '"');
-				} else {
-					parseValidResponse(response);
-				}
-			}
-		}
+	year = parseInt($('#titleYear').text().match(/[0-9]+/g)[0]);
+	actorName = $('.plot_summary span[itemprop="actors"] span:first').text();
+  var apiUrl = 'https://cinesift.com/api/values/getFilms?cast=' + actorName + '&comboScoreMax=100&comboScoreMin=0&countryCode=us&currentPage=0&director=&genreAND=false&imdbRatingMax=10&imdbRatingMin=0&imdbVotesMax=1600000&imdbVotesMin=0&inCinemas=true&includeDismissed=true&includeSeen=true&includeWantToWatch=true&isCastSearch=false&isDirectorSearch=false&language=all&letterboxdScoreMax=100&letterboxdScoreMin=0&letterboxdVotesMax=1400000&letterboxdVotesMin=0&metacriticMax=100&metacriticMin=0&netflixRegion=us&onAmazonPrime=false&onAmazonVideo=false&onDVD=false&onNetflix=false&plot=&popularityMax=100&popularityMin=0&queryType=GetFilmsToSieve&rtCriticFreshMax=300&rtCriticFreshMin=0&rtCriticMeterMax=100&rtCriticMeterMin=0&rtCriticRatingMax=10&rtCriticRatingMin=0&rtCriticReviewsMax=400&rtCriticReviewsMin=0&rtCriticRottenMax=200&rtCriticRottenMin=0&rtUserMeterMax=100&rtUserMeterMin=0&rtUserRatingMax=5&rtUserRatingMin=0&rtUserReviewsMax=40000000&rtUserReviewsMin=0&searchTerm=&sortOrder=comboScoreDesc&title=' + $('#star-rating-widget').data('title') + '&token=&watchedRating=0&writer=&yearMax=' + (year + 1) + '&yearMin=' + (year - 1);
+	$.ajax({
+	    url: apiUrl
+	}).done(function(data) {
+		data = JSON.parse(data);
+		parseValidResponse(data);
+	}).error(function(err) {
+		$('#rottenTomatoesResults').html('Error getting results from Cinesift.');
 	});
-} // end function getRTFromImdbId
+} // end function getRTInfo
 
 function parseValidResponse(response) {
+	if (response.length == 0) {
+		$('#rottenTomatoesResults').html('No results from Cinesift.');
+		return false;
+	}
+
+	var movie = response[0];
+	var tomatoUrl = 'https://duckduckgo.com/?q=site%3Arottentomatoes.com+' + encodeURIComponent($('#star-rating-widget').data('title')) + '+' + year + '+!&t=hg';
+
 	var rottenResults = $('#rottenTomatoesResults');
 	
 	// add tomato-meter score and icon
 	var tomatoMeterScoreImage = '';
-	
-	// set our defaults
-	tomatoMeterScoreText = 'No Score Yet...';
-	tomatoMeterScoreClass = ' noScore'
-	
-	// loop through available ratings sources to find RT
-	for (i = 0; i < response.Ratings.length; i++) {
-		if (response.Ratings[i].Source == 'Rotten Tomatoes') {
-			if (response.Ratings[i].Value != 'N/A') {
-				tomatoMeterScoreClass = '';
-				tomatoMeterScoreText = response.Ratings[i].Value;
+	if (movie.RTCriticMeter == 'N/A') {
+		tomatoMeterScoreText = 'No Score Yet...';
+		tomatoMeterScoreClass = ' noScore';
+	} else {
+		tomatoMeterScoreClass = '';
+		tomatoMeterScoreText = movie.RTCriticMeter + '%';
 
-				tomatoMeterScoreImage = $('<div/>').
-					attr('class', 'rtIcon ' + determineRatingIcon(tomatoMeterScoreText.slice(0, -1))).
-					//attr('class', 'rtIcon ' + response.tomatoImage).
-					attr('title', response.tomatoImage + ' - ' + tomatoMeterScoreText);
-			}
-			
-			break;
+		var tomatoImage = 'rotten';
+		if (movie.RTCriticMeter > 60) {
+			tomatoImage = 'fresh';
 		}
+
+		if (movie.RTCriticMeter > 75) {
+			tomatoImage = 'certified';
+		}
+
+		tomatoMeterScoreImage = $('<div/>').
+			attr('class', 'rtIcon ' + tomatoImage).
+			attr('title', tomatoImage + ' - ' + tomatoMeterScoreText);
 	}
-	
+
 	var tomatoMeterScore = $('<span/>').
 		attr('id', 'rottenTomatoesTomatoMeterScore').
 		text(tomatoMeterScoreText);
 
 	var tomatoMeter = $('<a/>').
-		attr('href', response.tomatoURL).
+		attr('href', tomatoUrl).
 		attr('id', 'rottenTomatoesTomatoMeterScore').
 		addClass('floater' + tomatoMeterScoreClass).
 		html('<p class="rt-credits">Rotten Tomatoes® Score</p>') .
@@ -339,14 +340,14 @@ function parseValidResponse(response) {
 		var audienceRatingLabel = 'Liked It';
 		var audienceRatingText = '';
 
-		if (response.tomatoUserMeter == 'N/A') {
+		if (movie.RTUserMeter == 'N/A') {
 			audienceRatingImageClass = 'wts';
 			audienceRatingText = 'No Audience Rating Yet';
 			audienceRatingLabel = 'Want To See It';
 		} else {
-			audienceRatingText = response.tomatoUserMeter + '%';
+			audienceRatingText = movie.RTUserMeter + '%';
 
-			var userRating = parseInt(response.tomatoUserMeter);
+			var userRating = parseInt(movie.RTUserMeter);
 			if (userRating >= 60) {
 				audienceRatingImageClass = 'upright';
 			};
@@ -358,7 +359,7 @@ function parseValidResponse(response) {
 
 			rottenResults.append(
 			$('<a/>').
-				attr('href', response.tomatoURL).
+				attr('href', tomatoUrl).
 				attr('id', 'rottenTomatoesAudience').
 				addClass('floater').
 				html('<p class="rt-credits">Audience</p>') .
@@ -368,9 +369,9 @@ function parseValidResponse(response) {
 	}
 
 	if (showAverageRating) {
-		averageRating = response.tomatoRating + '/10';
-		if (response.tomatoRating == 'N/A') {
-			averageRating = response.tomatoRating;
+		averageRating = movie.RTCriticRating + '/10';
+		if (movie.RTCriticRating == null) {
+			averageRating = 'n/a';
 		};
 		rottenResults.append(
 			$('<p/>').
@@ -381,9 +382,9 @@ function parseValidResponse(response) {
 	}
 	
 	if (showAudienceAverageRating) {
-		averageAudienceRating = response.tomatoUserRating + '/5';
-		if (response.tomatoUserRating == 'N/A') {
-			averageAudienceRating = response.tomatoUserRating;
+		averageAudienceRating = movie.RTUserRating + '/5';
+		if (movie.RTUserRating == null) {
+			averageAudienceRating = 'n/a';
 		};
 		rottenResults.append(
 			$('<div/>').
@@ -394,18 +395,18 @@ function parseValidResponse(response) {
 	}
 	
 	if (showReviewCount) {
-		reviewText = '<b>Reviews</b> : ' + response.tomatoReviews;
+		reviewText = '<b>Reviews</b> : ' + movie.RTCriticReviews;
 		if (showFreshReviewCount || showRottenReviewCount) {
 			reviewText = reviewText + ' (';
 			if (showFreshReviewCount) {
-				reviewText = reviewText + response.tomatoFresh + '&nbsp;Fresh';
+				reviewText = reviewText + movie.RTCriticFresh + '&nbsp;Fresh';
 			}
 			
 			if (showRottenReviewCount) {
 				if (showFreshReviewCount) {
 					reviewText = reviewText + ', ';
 				}
-				reviewText = reviewText + response.tomatoRotten + '&nbsp;Rotten';
+				reviewText = reviewText + movie.RTCriticRotten + '&nbsp;Rotten';
 			}
 			reviewText = reviewText + ')';
 		}
@@ -422,7 +423,7 @@ function parseValidResponse(response) {
 			$('<div/>').
 				attr('id', 'rottenTomatoesConsensus').
 				addClass('rottenClear').
-				html('<b>Consensus</b> : ' + response.tomatoConsensus)
+				html('<b>Consensus</b> : ' + movie.RTConsensus)
 		);
 	}
 	
@@ -431,23 +432,4 @@ function parseValidResponse(response) {
 			addClass("rottenClear").
 			html("&nbsp;")
 	);
-}
-
-function getIMDBid () {
-	var regexImdbNum = /\/title\/tt(\d{7})\//;
-	id = regexImdbNum.exec(document.location);
-	return id[1];
-}
-
-function determineRatingIcon(rating) {
-	// we can only go by rating not other qualifiers; not accurate for "certified"
-	if (rating < 60) {
-		return "rotten";
-	}
-	else if (rating < 70) {
-		return "fresh";
-	}
-	else {
-		return "certified";
-	}
 }
