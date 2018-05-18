@@ -16,13 +16,13 @@
   "content_scripts": [
     {
       "matches": [
-        "http://*.imdb.com/title/*/",
-        "http://*.imdb.com/title/*/?*",
-        "http://*.imdb.com/title/*/maindetails",
-        "http://*.imdb.com/title/*/combined",
-        "http://imdb.com/title/*/",
-        "http://imdb.com/title/*/maindetails",
-        "http://imdb.com/title/*/combined"
+        "*://*.imdb.com/title/*/",
+        "*://*.imdb.com/title/*/?*",
+        "*://*.imdb.com/title/*/maindetails",
+        "*://*.imdb.com/title/*/combined",
+        "*://imdb.com/title/*/",
+        "*://imdb.com/title/*/maindetails",
+        "*://imdb.com/title/*/combined"
       ],
       "js" : ["jquery-1.4.3.js", "contentscript.js", "grease-script.js"]
     }
